@@ -1,0 +1,19 @@
+{{- range $process := .Values.processes }}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ $.Values.name }}-{{ $process.type }}
+  labels:
+    app.kubernetes.io/name: {{ $.Values.name }}
+    app.kubernetes.io/component: {{ $process.type }}
+spec:
+  ports:
+  - name: {{ $.Values.portName }}
+    port: {{ $.Values.port }}
+    targetPort: {{ $.Values.port }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $.Values.name }}
+      app.kubernetes.io/component: {{ $process.type }}
+{{- end }}
