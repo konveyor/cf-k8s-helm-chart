@@ -4,7 +4,7 @@ Create the name of the service account to use
 */}}
 {{- define "java-backend.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default .Values.name .Values.serviceAccount.name }}
+{{- default .Values.manifest.name .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

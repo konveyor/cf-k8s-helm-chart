@@ -1,11 +1,11 @@
-{{- range $process := .Values.processes }}
+{{- range $process := .Values.manifest.processes }}
 ---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: {{ $.Values.name }}-{{ $process.type }}
+  name: {{ $.Values.manifest.name }}-{{ $process.type }}
   labels:
-    app.kubernetes.io/name: {{ $.Values.name }}
+    app.kubernetes.io/name: {{ $.Values.manifest.name }}
     app.kubernetes.io/component: {{ $process.type }}
 spec:
   strategy:
@@ -24,20 +24,20 @@ spec:
   replicas: {{ $process.instances }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ $.Values.name }}
+      app.kubernetes.io/name: {{ $.Values.manifest.name }}
       app.kubernetes.io/component: {{ $process.type }}
   template:
     metadata:
-      name: {{ $.Values.name }}-{{ $process.type }}
+      name: {{ $.Values.manifest.name }}-{{ $process.type }}
       labels:
-        app.kubernetes.io/name: {{ $.Values.name }}
+        app.kubernetes.io/name: {{ $.Values.manifest.name }}
         app.kubernetes.io/component: {{ $process.type }}
     spec:
       terminationGracePeriodSeconds: {{ $.Values.terminationGracePeriod | default 60 }}
       serviceAccountName: {{ include "java-backend.serviceAccountName" $ }}
       containers:
-      - name: {{ $.Values.name }}-{{ $process.type }}
-        image: "{{ $.Values.image.registry }}/{{ $.Values.name }}-{{ $process.type }}:{{ $.Values.image.tag }}"
+      - name: {{ $.Values.manifest.name }}-{{ $process.type }}
+        image: "{{ $.Values.image.registry }}/{{ $.Values.manifest.name }}-{{ $process.type }}:{{ $.Values.image.tag }}"
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
         {{- if $process.command }}
         command: ["/bin/bash", "-c"]
@@ -50,8 +50,8 @@ spec:
           {{- /* CF applications are expected to listen on the port specified by the $PORT environment variable */}}
           - name: PORT
             value: {{ $.Values.port }}
-        {{- if $.Values.env }}
-        {{- range $key, $value := $.Values.env }}
+        {{- if $.Values.manifest.env }}
+        {{- range $key, $value := $.Values.manifest.env }}
           - name: {{ $key }}
             value: {{ $value }}
         {{- end }}
@@ -90,8 +90,8 @@ spec:
           periodSeconds: {{ $process.healthCheck.interval }}
           timeoutSeconds: {{ $process.healthCheck.invocationTimeout }}
           {{- end }}
-      {{- if $.Values.sidecars }}
-      {{- range $sidecar := $.Values.sidecars }}
+      {{- if $.Values.manifest.sidecars }}
+      {{- range $sidecar := $.Values.manifest.sidecars }}
       {{- if or (not $sidecar.processType) (has $process.type $sidecar.processType) }}
       - name: {{ $sidecar.name }}
         image: "{{ $.Values.image.registry }}/{{ $sidecar.name }}:{{ $.Values.image.tag }}"
@@ -100,9 +100,9 @@ spec:
         command: ["/bin/bash", "-c"]
         args: ["{{ $sidecar.command }}"]
         {{- end }}
-        {{- if $.Values.env }}
+        {{- if $.Values.manifest.env }}
         env:
-        {{- range $key, $value := $.Values.env }}
+        {{- range $key, $value := $.Values.manifest.env }}
           - name: {{ $key }}
             value: {{ $value }}
         {{- end }}
