@@ -13,7 +13,6 @@ spec:
     port: {{ $.Values.port }}
     targetPort: {{ $.Values.port }}
   selector:
-    matchLabels:
-      app.kubernetes.io/name: {{ $.Values.manifest.name }}
-      app.kubernetes.io/component: {{ $process.type }}
+    app.kubernetes.io/name: {{ $.Values.manifest.name }}
+    app.kubernetes.io/component: {{ $process.type }}
 {{- end }}

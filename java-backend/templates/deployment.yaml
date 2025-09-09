@@ -41,7 +41,9 @@ spec:
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
         {{- if $process.command }}
         command: ["/bin/bash", "-c"]
-        args: ["{{ $process.command }}"]
+        args:
+          - |
+            {{ $process.command }}
         {{- end }}
         ports:
           - containerPort: {{ $.Values.port }}
@@ -98,7 +100,9 @@ spec:
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
         {{- if $sidecar.command }}
         command: ["/bin/bash", "-c"]
-        args: ["{{ $sidecar.command }}"]
+        args:
+          - |
+            {{ $sidecar.command }}
         {{- end }}
         {{- if $.Values.manifest.env }}
         env:
