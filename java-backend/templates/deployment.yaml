@@ -87,10 +87,29 @@ spec:
             path: {{ $process.healthCheck.endpoint }}
             port: {{ $.Values.port }}
           {{- end }}
-          initialDelaySeconds: {{ $process.healthCheck.timeout }}
           {{- if or (eq $process.healthCheck.type "port") (eq $process.healthCheck.type "http") }}
           periodSeconds: {{ $process.healthCheck.interval }}
           timeoutSeconds: {{ $process.healthCheck.invocationTimeout }}
+          {{- end }}
+        {{- /* All CF processes have implicit or explicit readiness checks that translate into readiness probes*/}}
+        readinessProbe:
+          {{- if eq $process.readinessCheck.type "process" }}
+          exec:
+            command:
+              - sh
+              - -c
+              - "ps -ef | grep '{{ include "java-backend.executableName" $process.command }}' | grep -v grep"
+          {{- else if eq $process.readinessCheck.type "port" }}
+          tcpSocket:
+            port: {{ $.Values.port }}
+          {{- else if eq $process.readinessCheck.type "http" }}
+          httpGet:
+            path: {{ $process.readinessCheck.endpoint }}
+            port: {{ $.Values.port }}
+          {{- end }}
+          {{- if or (eq $process.readinessCheck.type "port") (eq $process.readinessCheck.type "http") }}
+          periodSeconds: {{ $process.readinessCheck.interval }}
+          timeoutSeconds: {{ $process.readinessCheck.invocationTimeout }}
           {{- end }}
       {{- if $.Values.manifest.sidecars }}
       {{- range $sidecar := $.Values.manifest.sidecars }}

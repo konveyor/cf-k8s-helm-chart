@@ -14,13 +14,6 @@ health:
   probeDelay: 5
   probePeriod: 10
   probeTimeout: 2
-autoscaling:
-  enabled: false
-namespace:
-  enabled: true
-  name: ${{values.namespace}}
-  argocd:
-    name: ${{values.component_id}}
 
 replicaCount: 1
 
