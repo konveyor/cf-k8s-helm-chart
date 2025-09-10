@@ -27,3 +27,12 @@ Example: "bundle exec run-authenticator" -> "run-authenticator"
 {{- $lastPart -}}
 {{- end -}}
 {{- end -}}
+
+{{- define "java-backend.quoteIfNotString" }}
+{{- $value := . -}}
+{{- if not (kindOf $value | eq "string") -}}
+"{{- toString $value -}}"
+{{- else -}}
+{{- $value -}}
+{{- end -}}
+{{- end -}}

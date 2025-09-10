@@ -51,11 +51,11 @@ spec:
         env:
           {{- /* CF applications are expected to listen on the port specified by the $PORT environment variable */}}
           - name: PORT
-            value: {{ $.Values.port }}
+            value: "{{ $.Values.port }}"
         {{- if $.Values.manifest.env }}
         {{- range $key, $value := $.Values.manifest.env }}
           - name: {{ $key }}
-            value: {{ $value }}
+            value: {{ include "java-backend.quoteIfNotString" $value }}
         {{- end }}
         {{- end }}
         {{- if or ($.Values.limits) ($.Values.requests) }}
@@ -127,7 +127,7 @@ spec:
         env:
         {{- range $key, $value := $.Values.manifest.env }}
           - name: {{ $key }}
-            value: {{ $value }}
+            value: {{ include "java-backend.quoteIfNotString" $value }}
         {{- end }}
         {{- end }}
         {{- if or ($.Values.limits) ($.Values.requests) }}
