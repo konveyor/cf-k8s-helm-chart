@@ -1,13 +1,11 @@
 portName: 8080-tcp
 port: 8080
+replicaCount: 1
 
 deploymentStrategy:
   type: RollingUpdate
   rollingMaxSurge: 25%
   rollingMaxUnavailable: 20%
-replicaCount: 1
-
-replicaCount: 1
 
 image:
   registry: image-registry.openshift-image-registry.svc:5000
