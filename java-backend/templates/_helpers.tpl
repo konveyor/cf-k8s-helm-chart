@@ -36,3 +36,35 @@ Example: "bundle exec run-authenticator" -> "run-authenticator"
 {{- $value -}}
 {{- end -}}
 {{- end -}}
+
+{{- define "java-backend.command.parse" -}}
+{{- $commandLine := . -}}
+{{- $words := splitList " " $commandLine -}}
+{{- $isShellCommand := false -}}
+
+{{- range list "&&" "||" "|" ">" "<" ";" "$" -}}
+{{- if contains . $commandLine -}}
+{{- $isShellCommand = true -}}
+{{- end -}}
+{{- end -}}
+
+{{- if $isShellCommand -}}
+command:
+  - "/bin/bash"
+args:
+  - "-c"
+  - |
+    {{ $commandLine }}
+{{- else -}}
+{{- $args := rest $words -}}
+command:
+  - {{ first $words | quote }}
+{{ $args := rest $words -}}
+{{- if $args -}}
+args:
+{{- range $args }}
+  - {{ . | quote }}
+{{- end }}
+{{- end -}}
+{{- end -}}
+{{- end -}}

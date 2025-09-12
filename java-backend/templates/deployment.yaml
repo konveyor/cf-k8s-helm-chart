@@ -40,10 +40,7 @@ spec:
         image: "{{ $.Values.image.registry }}/{{ $.Values.manifest.name }}-{{ $process.type }}:{{ $.Values.image.tag }}"
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
         {{- if $process.command }}
-        command: ["/bin/bash", "-c"]
-        args:
-          - |
-            {{ $process.command }}
+        {{- include "java-backend.command.parse" $process.command | nindent 8 }}
         {{- end }}
         ports:
           - containerPort: {{ $.Values.port }}
@@ -118,10 +115,7 @@ spec:
         image: "{{ $.Values.image.registry }}/{{ $sidecar.name }}:{{ $.Values.image.tag }}"
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
         {{- if $sidecar.command }}
-        command: ["/bin/bash", "-c"]
-        args:
-          - |
-            {{ $sidecar.command }}
+        {{- include "java-backend.command.parse" $sidecar.command | nindent 8 }}
         {{- end }}
         {{- if $.Values.manifest.env }}
         env:
