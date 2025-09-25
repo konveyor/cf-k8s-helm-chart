@@ -16,7 +16,6 @@ Aside from the fields included in the [Konveyor Discovery Manifest](https://gith
 
 | Parameter | Description | Default Value |
 | :--- | :--- | :--- |
-| `replicaCount` | The number of application replicas to deploy | `1` |
 | `image.registry` | The container registry to pull the image from | `image-registry.openshift-image-registry.svc:5000` |
 | `image.pullPolicy` | The image pull policy for the containers | `Always` |
 | `image.tag` | The image tag to use for the container image | `latest` |
